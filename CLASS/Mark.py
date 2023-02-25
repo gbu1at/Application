@@ -1,6 +1,9 @@
+import json
+
 from functions import *
 from SETTING import *
 import csv
+from function_mark import *
 
 
 class Mark:
@@ -76,13 +79,10 @@ class Mark:
                 except ValueError as ex:
                     print("некорректные данные")
                     return
-                try:
-                    set_cost_mark(MarkInfo(name, container_volume), cost)
-                    self.add(MarkInfo(name, container_volume), count)
-                    self.update_table()
-                    other.close()
-                except Exception as ex:
-                    print(ex)
+                self.add(MarkInfo(name, container_volume), count)
+                set_cost_mark(MarkInfo(name, container_volume), cost)
+                self.reboot_csv()
+                other.close()
 
             def click_btnExit(other):
                 other.close()
@@ -94,24 +94,28 @@ class Mark:
         update_table(mark_path, self.root.MarkTable, is_show_line)
 
     def add(self, mark: MarkInfo, count: float):
-        writer = open_csv_file(mark_path)
+        if not find_mark_json(mark):
+            add_mark_json(mark)
+        plus_mark_count_json(mark, count)
 
-        if not find_mark_in_csv(mark):
-            writer.append({"name": mark.name, "container_volume": mark.container_volume, "count": 0,
-                           "cost": get_cost_mark(mark)})
-
-        writer = sorted(writer, key=lambda x: (x['name'], float(x['container_volume'])))
-
+    def reboot_csv(self):
+        with open(mark_json_path, 'r') as f:
+            data = json.load(f)
         with open(mark_path, "w") as f:
-            write = csv.DictWriter(f, fieldnames=["name", "container_volume", "count", "cost"])
+            write = csv.DictWriter(f, fieldnames=["name", "container volume", "count", "cost"])
             write.writeheader()
-            for line in writer:
-                line["cost"] = get_cost_mark(MarkInfo(line["name"], float(line["container_volume"])))
-                if line['name'] == mark.name and float(line['container_volume']) == float(mark.container_volume):
-                    line["count"] = str(float(line['count']) + float(count))
-                write.writerow(line)
+            for mark in data:
+                if mark == "mark":
+                    continue
+                row = {}
+                for volume in data[mark]:
+                    line = data[mark][volume]
+                    row = {"name": mark, "container volume": volume, "count": line["count"],
+                           "cost": line["cost"]}
+                    write.writerow(row)
+        self.update_table()
 
     def minus(self, mark: MarkInfo, count: float):
-        if not find_mark_in_csv(mark):
+        if not find_mark_json(mark):
             raise MarkEx("нет такой этикетки")
         self.add(mark, -count)

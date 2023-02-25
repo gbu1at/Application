@@ -1,5 +1,6 @@
 import csv
 
+from function_container import *
 from functions import *
 from SETTING import *
 
@@ -16,7 +17,6 @@ class Container:
     def setting_btn(self):
         self.root.btn_find_container.clicked.connect(self.click_btn_find_container)
         self.root.btn_add_container.clicked.connect(self.click_btn_add_container)
-        self.root.btn_add_new_container.clicked.connect(self.click_btn_add_new_container)
 
     def click_btn_find_container(self):
         name = self.root.edit_find_container.text()
@@ -75,13 +75,10 @@ class Container:
                 except ValueError as ex:
                     print("некорректные данные")
                     return
-                try:
-                    set_cost_container(ContainerInfo(name, container_volume), cost)
-                    self.add(ContainerInfo(name, container_volume), count)
-                    self.update_table()
-                    other.close()
-                except Exception as ex:
-                    print(ex)
+                self.add(ContainerInfo(name, container_volume), count)
+                set_cost_container(ContainerInfo(name, container_volume), cost)
+                self.reboot_csv()
+                other.close()
 
             def click_btnExit(other):
                 other.close()
@@ -89,32 +86,32 @@ class Container:
         self.form = Form()
         self.form.show()
 
-    def click_btn_add_new_container(self):
-        ...
-
     def update_table(self, is_show_line=lambda x: True):
         update_table(container_path, self.root.ContainerTable, is_show_line)
 
     def add(self, container: ContainerInfo, count):
-        writer = open_csv_file(container_path)
+        if not find_container_json(container):
+            add_container_json(container)
+        plus_container_count_json(container, count)
+        self.reboot_csv()
 
-        if not find_container_in_csv(container):
-            writer.append(
-                {"name": container.name, "volume": container.volume, "count": 0, "cost": get_cost_container(container)}
-            )
-
-        writer = sorted(writer, key=lambda x: (x['name'], float(x['volume'])))
-
+    def reboot_csv(self):
+        with open(container_json_path, 'r') as f:
+            data = json.load(f)
         with open(container_path, 'w') as f:
             write = csv.DictWriter(f, fieldnames=["name", "volume", "count", "cost"])
             write.writeheader()
-            for line in writer:
-                line["cost"] = get_cost_container(ContainerInfo(line["name"], float(line["volume"])))
-                if line["name"] == container.name and float(line["volume"]) == float(container.volume):
-                    line["count"] = float(line["count"]) + count
-                write.writerow(line)
+            for container in data:
+                if container == "container":
+                    continue
+                row = {}
+                for volume in data[container]:
+                    line = data[container][volume]
+                    row = {"name": container, "volume": volume, "count": line["count"], "cost": line["cost"]}
+                    write.writerow(row)
+        self.update_table()
 
     def minus(self, container: ContainerInfo, count):
-        if not find_container_in_csv(container):
+        if not find_container_json(container):
             raise ContainerEx("тара не найдена")
         self.add(container, -count)

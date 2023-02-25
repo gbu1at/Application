@@ -7,6 +7,11 @@ from CLASS.DirtyStock import DirtyStock
 from CLASS.SoldGoods import SoldGoods
 from CLASS.Container import Container
 from functions import *
+from function_component import *
+from function_product import *
+from function_mark import *
+from function_dirty_stock import *
+
 import json
 import sys
 
@@ -74,7 +79,7 @@ class Application(QMainWindow):
 
             def click_old_radio_btn(other):
                 product = other.product_edit.text()
-                recipe = self.PRODUCT.find(product)
+                recipe = get_recipe(product)
                 if recipe == None:
                     ...
                 else:
@@ -104,9 +109,9 @@ class Application(QMainWindow):
                             percent = percent.strip()
                             recipe[comp] = float(percent)
                     elif other.old_radio_btn.isChecked():
-                        recipe = self.PRODUCT.find(product)
+                        recipe = get_recipe(product)
                         if recipe == None:
-                            raise Exception
+                            raise Exception("нет рецепта")
                     else:
                         raise Exception
                 except Exception as ex:
@@ -128,18 +133,12 @@ class Application(QMainWindow):
         class FunctionProduct__Dirtystock(QWidget):
             def __init__(other):
                 super().__init__()
-                other.width = 280
-                other.height = 280
+                other.width = 300
+                other.height = 300
                 other.initUI()
 
             def initUI(other):
                 other.setGeometry(100, 100, other.height, other.width)
-                other.btnOK = QPushButton("Apply", other)
-                other.btnOK.move(10, 240)
-                other.btnExit = QPushButton("Exit", other)
-                other.btnExit.move(110, 240)
-                other.btnOK.clicked.connect(other.btnOK_click)
-                other.btnExit.clicked.connect(other.btnExit_click)
 
                 other.product_edit = QLineEdit(other)
                 label_product = QLabel("продкут", other)
@@ -147,25 +146,39 @@ class Application(QMainWindow):
                 other.product_edit.move(110, 20)
 
                 label_container_volume = QLabel("объем тары", other)
-                label_container_volume.move(10, 100)
+                label_container_volume.move(10, 80)
                 other.container_volume_edit = QLineEdit(other)
-                other.container_volume_edit.move(110, 100)
+                other.container_volume_edit.move(110, 80)
 
                 label_count = QLabel("кол-во тары", other)
-                label_count.move(10, 180)
+                label_count.move(10, 140)
                 other.count = QLineEdit(other)
-                other.count.move(110, 180)
+                other.count.move(110, 140)
+
+                label_container_name = QLabel("тара", other)
+                label_container_name.move(10, 200)
+                other.container_name_edit = QLineEdit(other)
+                other.container_name_edit.move(110, 200)
+
+                other.btnOK = QPushButton("Apply", other)
+                other.btnOK.move(10, 260)
+                other.btnExit = QPushButton("Exit", other)
+                other.btnExit.move(110, 260)
+                other.btnOK.clicked.connect(other.btnOK_click)
+                other.btnExit.clicked.connect(other.btnExit_click)
 
             def btnOK_click(other):
                 product = other.product_edit.text()
                 try:
+                    container_name = other.container_name_edit.text()
                     container_volume = float(other.container_volume_edit.text())
                     count = float(other.count.text())
                 except ValueError as ex:
                     print("некорректные данные")
                     return
                 try:
-                    self.product__dirtystock(product=product, count=count, container_volume=container_volume)
+                    self.product__dirtystock(product=product, count=count,
+                                             container=ContainerInfo(container_name, container_volume))
                     other.close()
                 except Exception as ex:
                     print(ex)
@@ -236,9 +249,9 @@ class Application(QMainWindow):
 
                 try:
                     m = MarkInfo(mark, container_volume)
-                    p = ProductInfo(product, container_volume, None)
                     c = ContainerInfo(container_name, container_volume)
-                    self.dirtystock__stock(p, m, c, count)
+                    p = ProductInfo(product, c)
+                    self.dirtystock__stock(p, m, count)
                     other.close()
                 except Exception as ex:
                     print(ex)
@@ -318,86 +331,48 @@ class Application(QMainWindow):
         self.setting_btn()
 
     def component__product(self, product: str, mass: float, recipe=None):
-        """
-            :param product: продукция
-            :param mass: масса
-            :param recipe: рецептура, по которой нужно приготовить продукт
-            :return:
-        """
-
         with open(product_json_path, 'r') as f:
-            data_json = json.load(f)
-
-        if not self.PRODUCT.find(product):
-            set_recipe(product, recipe)
+            data = json.load(f)
 
         if recipe is None:
-            recipe = data_json[product]
+            recipe = data[product]["recipe"]
         for comp in recipe:
-            if not self.COMPONENT.find(comp):
+            if not find_component_json(comp):
                 raise Exception("некорректный рецепт, компонент не найден")
-        try:
-            self.PRODUCT.add(product, mass)  # добавляем массу продукта к готовым продуктам
-        except Exception as ex:
-            raise ex
+        self.PRODUCT.add(product, mass)  # добавляем массу продукта к готовым продуктам
+        set_recipe(product, recipe)
         for comp in recipe:
-            # recipe[comp] - процентное соотношение
             minus_mass = recipe[comp] * mass / 100
-            self.COMPONENT.minus(comp, minus_mass)  # вычитаем из таблицы компонент соответствующую массу
+            self.COMPONENT.minus(comp, minus_mass)
 
-        self.COMPONENT.update_table()
-        self.PRODUCT.update_table()
+        update(self)
 
-    def product__dirtystock(self, product: str, count: float, container_volume: float):
+    def product__dirtystock(self, product: str, count: float, container: ContainerInfo):
         """
             :param product: продукция
             :param count: кол-во продукции
             :param container_volume: объем тары
             :return:
         """
-        mass = count * container_volume
-        if self.PRODUCT.find(product) is None:
-            raise Exception
-        try:
-            self.PRODUCT.minus(product, mass)
-        except Exception as ex:
-            raise ex
+        mass = count * container.volume
+        if not find_product_json(product):
+            raise Exception("нет продукта")
 
-        try:
-            self.DIRTYSTOCK.add(ProductInfo(name=product, container_volume=container_volume, cost=0), count)
-        except Exception as ex:
-            self.PRODUCT.add(product, mass)
-            raise ex
+        self.PRODUCT.minus(product, mass)
+        self.CONTAINER.minus(container, count)
+        self.DIRTYSTOCK.add(ProductInfo(name=product, container=container), count)
 
-        self.PRODUCT.update_table()
-        self.DIRTYSTOCK.update_table()
+        update(self)
 
-    def dirtystock__stock(self, product: ProductInfo, mark: MarkInfo, container: ContainerInfo, count: float):
-        try:
-            self.DIRTYSTOCK.minus(product, count)
-            self.MARK.minus(mark, count)
-            self.CONTAINER.minus(container, count)
-        except ContainerEx as ex:
-            self.MARK.add(mark, count)
-            self.DIRTYSTOCK.add(product, count)
-            raise ex
-        except MarkEx as ex:
-            self.DIRTYSTOCK.add(product, count)
-            raise ex
-        except DirtyStock as ex:
-            raise ex
+    def dirtystock__stock(self, product: ProductInfo, mark: MarkInfo, count: float):
+        finally_product = FinallyProduct(product, mark)
+        if not (find_dirty_stock_json(product) and find_mark_json(mark)):
+            raise Exception("нет этикеток или продукта")
+        self.DIRTYSTOCK.minus(product, count)
+        self.MARK.minus(mark, count)
+        self.STOCK.add(finally_product, count)
 
-        try:
-            self.STOCK.add(product, mark, container, count)
-        except Exception as ex:
-            self.DIRTYSTOCK.add(product, count)
-            self.MARK.add(mark, count)
-            raise ex
-
-        self.DIRTYSTOCK.update_table()
-        self.MARK.update_table()
-        self.CONTAINER.update_table()
-        self.STOCK.update_table()
+        update(self)
 
     def stock__soldgoods(self, product, count: float, container_volume: float, cost: float, price: float):
         try:

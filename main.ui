@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
+    <width>1025</width>
     <height>775</height>
    </rect>
   </property>
@@ -17,14 +17,14 @@
    <widget class="QTabWidget" name="TAB">
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>0</x>
       <y>10</y>
-      <width>781</width>
+      <width>1001</width>
       <height>631</height>
      </rect>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -35,7 +35,7 @@
        <rect>
         <x>25</x>
         <y>21</y>
-        <width>731</width>
+        <width>961</width>
         <height>481</height>
        </rect>
       </property>
@@ -62,7 +62,7 @@
       <property name="geometry">
        <rect>
         <x>30</x>
-        <y>520</y>
+        <y>530</y>
         <width>191</width>
         <height>31</height>
        </rect>
@@ -107,19 +107,6 @@
        <string>Добавить компонент</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="btn_add_new_component">
-      <property name="geometry">
-       <rect>
-        <x>30</x>
-        <y>560</y>
-        <width>171</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Добавить новый компонент</string>
-      </property>
-     </widget>
      <widget class="QPushButton" name="btn_set_cost_component">
       <property name="geometry">
        <rect>
@@ -133,6 +120,29 @@
        <string>изменить стоимость компонента</string>
       </property>
      </widget>
+     <widget class="QPushButton" name="btn_del_component">
+      <property name="geometry">
+       <rect>
+        <x>800</x>
+        <y>520</y>
+        <width>171</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Удалить компонент</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="edit_del_component">
+      <property name="geometry">
+       <rect>
+        <x>800</x>
+        <y>550</y>
+        <width>171</width>
+        <height>22</height>
+       </rect>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="tab_4">
      <attribute name="title">
@@ -143,7 +153,7 @@
        <rect>
         <x>25</x>
         <y>21</y>
-        <width>731</width>
+        <width>961</width>
         <height>481</height>
        </rect>
       </property>
@@ -222,7 +232,7 @@
        <rect>
         <x>25</x>
         <y>21</y>
-        <width>731</width>
+        <width>961</width>
         <height>481</height>
        </rect>
       </property>
@@ -301,7 +311,7 @@
        <rect>
         <x>25</x>
         <y>21</y>
-        <width>731</width>
+        <width>961</width>
         <height>481</height>
        </rect>
       </property>
@@ -354,7 +364,7 @@
        <rect>
         <x>25</x>
         <y>21</y>
-        <width>731</width>
+        <width>961</width>
         <height>481</height>
        </rect>
       </property>
@@ -410,7 +420,7 @@
        <rect>
         <x>25</x>
         <y>21</y>
-        <width>731</width>
+        <width>961</width>
         <height>481</height>
        </rect>
       </property>
@@ -476,7 +486,7 @@
        <rect>
         <x>25</x>
         <y>21</y>
-        <width>731</width>
+        <width>961</width>
         <height>481</height>
        </rect>
       </property>

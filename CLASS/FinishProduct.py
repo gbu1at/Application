@@ -1,4 +1,5 @@
 from functions import *
+from function_finally_product import *
 from SETTING import *
 import csv
 
@@ -32,46 +33,38 @@ class FinishedProducts():
     def update_table(self, is_show_line=lambda x: True):
         update_table(stock_path, self.root.StockTable, is_show_line)
 
-    def add(self, product: ProductInfo, mark: MarkInfo, container: ContainerInfo, count):
-        writer = open_csv_file(stock_path)
+    def add(self, product: FinallyProduct, count):
+        if not find_finally_product_json(product):
+            add_finally_product_json(product)
+        plus_count_finally_product(product, count)
+        self.reboot_csv()
 
-        if not find_finish_product_in_csv(product):
-            writer.append(
-                {"name": product.name, "container_volume": product.container_volume, "mark": mark.name,
-                 "container": container.name, "count": 0,
-                 "cost": get_cost_finally_product(FinallyProduct(product, mark, container)),
-                 "volume": 0})
-
-        writer = sorted(writer, key=lambda x: (x['name'], float(x['container_volume'])))
+    def reboot_csv(self):
+        data = read_json(finally_product_json_path)
 
         with open(stock_path, "w") as f:
-            write = csv.DictWriter(f, fieldnames=["name", "container_volume", "mark", "container", "count", "cost",
-                                                  "volume"])
+            write = csv.DictWriter(f, fieldnames=list(data["product"]["container&mark"]["volume"]))
             write.writeheader()
-            for line in writer:
-                p = ProductInfo(line["name"], float(line["container_volume"]), None)
-                m = MarkInfo(line["mark"], float(line["container_volume"]))
-                c = ContainerInfo(line["container"], float(line["container_volume"]))
-                line["volume"] = float(line["count"]) * float(line["container_volume"])
-                if line['name'] == product.name and float(line["container_volume"]) == float(product.container_volume):
-                    line["count"] = str(float(line['count']) + float(count))
-                    line["volume"] = float(line["count"]) * float(line["container_volume"])
-                    line["cost"] = get_cost_finally_product(FinallyProduct(p, m, c))
-                write.writerow(line)
+            for product in data:
+                if product == "product": continue
+                for key in data[product]:
+                    x = data[product][key]
+                    for volume in x:
+                        line = x[volume]
+                        cnt_name = line["container name"]
+                        mark = line["mark"]
+                        volume = line["volume"]
+                        pr = FinallyProduct(ProductInfo(product, ContainerInfo(cnt_name, volume)), MarkInfo(mark, volume))
+                        update_finally_product(pr)
 
-    def minus(self, product: ProductInfo, mark: MarkInfo, count):
-        if not find_finish_product_in_csv(product):
+                        row = {}
+                        for col in line:
+                            row[col] = line[col]
+                        write.writerow(row)
+
+        self.update_table()
+
+    def minus(self, product: FinallyProduct, count):
+        if not find_finally_product_json(product):
             raise StockEx("нет продукта на складе")
-        self.add(product, mark, -count)
-
-    def update_cost_product(self):
-        writer = open_csv_file(stock_path)
-        with open(stock_path, 'w') as f:
-            w = csv.DictWriter(f, fieldnames=["name", "container_volume", "mark", "container", "count", "cost", "volume"])
-            w.writeheader()
-            for line in writer:
-                product = ProductInfo(line["name"], float(line["container_volume"]), None)
-                mark = MarkInfo(line["mark"], float(line["container_volume"]))
-                container = ContainerInfo(line["container"], float(line["container_volume"]))
-                line["cost"] = get_cost_finally_product(FinallyProduct(product, mark, container))
-                w.writerow(line)
+        self.add(product, -count)

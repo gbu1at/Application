@@ -1,4 +1,5 @@
 from functions import *
+from function_dirty_stock import *
 from SETTING import *
 import csv
 
@@ -13,7 +14,7 @@ class DirtyStock():
 
     def initUI(self):
         self.setting_btn()
-        self.update_table()
+        self.reboot_csv()
 
     def click_btn_find_product_dirty_stock(self):
         product = self.root.edit_find_product_dirty_stock.text()
@@ -26,23 +27,29 @@ class DirtyStock():
         update_table(dirtystock_path, self.root.DirtyStockTable, is_show_line)
 
     def add(self, product: ProductInfo, count):
-        writer = open_csv_file(dirtystock_path)
-        if not find_dirtystock_in_csv(product):
-            writer.append({"name": product.name, "container_volume": product.container_volume, "count": 0, "volume": 0})
+        if not find_dirty_stock_json(product):
+            add_dirty_stock_json(product)
+        plus_count_dirty_stock_json(product, count)
+        update_dirty_stock_product(product)
+        self.reboot_csv()
 
-        writer = sorted(writer, key=lambda x: (x['name'], float(x['container_volume'])))
-
+    def reboot_csv(self):
+        data = read_json(dirty_stock_json_path)
         with open(dirtystock_path, "w") as f:
-            write = csv.DictWriter(f, fieldnames=["name", "container_volume", "count", "volume"])
+            write = csv.DictWriter(f, fieldnames=list(data["product"]["container volume"]))
             write.writeheader()
-            for line in writer:
-                line["volume"] = float(line["count"]) * float(line["container_volume"])
-                if line['name'] == product.name and float(line["container_volume"]) == float(product.container_volume):
-                    line["count"] = str(float(line['count']) + float(count))
-                    line["volume"] = float(line["count"]) * float(line["container_volume"])
-                write.writerow(line)
+            for product in data:
+                if product == "product": continue
+                for volume in data[product]:
+                    line = data[product][volume]
+                    update_dirty_stock_product(ProductInfo(product, ContainerInfo(line["container name"], volume)))
+                    row = {}
+                    for col in line:
+                        row[col] = line[col]
+                    write.writerow(row)
+        self.update_table()
 
     def minus(self, product: ProductInfo, count):
-        if not find_dirtystock_in_csv(product):
+        if not find_dirty_stock_json(product):
             raise DirtyStockEx("на грязном складе нет данной продукции")
         self.add(product, -count)
