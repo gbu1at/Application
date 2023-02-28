@@ -16,39 +16,44 @@ def get_cost_finally_product(product: FinallyProduct):
 
 def plus_count_finally_product(product: FinallyProduct, count):
     data = read_json(finally_product_json_path)
-    name = product.product.name
+    name = get_key_str(product.product.name)
     volume = product.container_volume
-    key = product.container_name + "&" + product.mark.name
+    key = get_key_str(product.container_name) + "&" + get_key_str(product.mark.name)
     data[name][key][volume]["count"] += count
     write_json(finally_product_json_path, data)
 
 
 def add_finally_product_json(product: FinallyProduct):
     data = read_json(finally_product_json_path)
+
     name = product.product.name
     cnt_name = product.container_name
     mark = product.mark.name
-    volume = product.container_volume
-    if name not in data:
-        data[name] = {}
-    key = f"{cnt_name}&{mark}"
-    if key not in data[name]:
-        data[name][key] = {}
-    data[name][key][volume] = {"name": name,
-                               "container name": cnt_name,
-                               "mark": mark,
-                               "count": 0,
-                               "cost": 0,
-                               "volume": volume}
+
+    key_name = get_key_str(name)
+    key_cnt_name = get_key_str(cnt_name)
+    key_mark = get_key_str(mark)
+    volume = str(product.container_volume)
+    if key_name not in data:
+        data[key_name] = {}
+    key = f"{key_cnt_name}&{key_mark}"
+    if key not in data[key_name]:
+        data[key_name][key] = {}
+    data[key_name][key][volume] = {"name": name,
+                                   "container name": cnt_name,
+                                   "mark": mark,
+                                   "count": 0,
+                                   "cost": 0,
+                                   "volume": volume}
     write_json(finally_product_json_path, data)
 
 
 def find_finally_product_json(product: FinallyProduct):
     data = read_json(finally_product_json_path)
-    name = product.product.name
+    name = get_key_str(product.product.name)
     volume = product.container_volume
     if name in data:
-        key = f"{product.container_name}&{product.mark.name}"
+        key = f"{get_key_str(product.container_name)}&{get_key_str(product.mark.name)}"
         if key in data[name]:
             return str(volume) in data[name][key]
         return False
@@ -57,10 +62,10 @@ def find_finally_product_json(product: FinallyProduct):
 
 def set_cost_finaly_product(product: FinallyProduct, new_cost):
     data = read_json(finally_product_json_path)
-    name = product.product.name
-    cnt_name = product.container_name
-    mark = product.mark.name
-    volume = product.container_volume
+    name = get_key_str(product.product.name)
+    cnt_name = get_key_str(product.container_name)
+    mark = get_key_str(product.mark.name)
+    volume = str(product.container_volume)
     key = f"{cnt_name}&{mark}"
 
     data[name][key][volume]["cost"] = new_cost
@@ -74,8 +79,6 @@ def update_finally_product(product: FinallyProduct):
 
 
 def update_cost_finally_product(product: FinallyProduct):
-    data = read_json(finally_product_json_path)
-
     cost = get_cost_finally_product(product)
     set_cost_finaly_product(product, cost)
 

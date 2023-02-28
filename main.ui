@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1025</width>
-    <height>775</height>
+    <height>776</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,13 +18,13 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>10</y>
+      <y>0</y>
       <width>1001</width>
-      <height>631</height>
+      <height>621</height>
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>2</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -74,7 +74,7 @@
      <widget class="QLineEdit" name="edit_find_component">
       <property name="geometry">
        <rect>
-        <x>372</x>
+        <x>360</x>
         <y>520</y>
         <width>131</width>
         <height>22</height>
@@ -222,6 +222,39 @@
        <string>Добавить этикетку</string>
       </property>
      </widget>
+     <widget class="QPushButton" name="btn_del_mark">
+      <property name="geometry">
+       <rect>
+        <x>800</x>
+        <y>520</y>
+        <width>171</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Удалить этикетку</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="edit_del_mark_name">
+      <property name="geometry">
+       <rect>
+        <x>800</x>
+        <y>550</y>
+        <width>81</width>
+        <height>22</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="edit_del_mark_volume">
+      <property name="geometry">
+       <rect>
+        <x>890</x>
+        <y>550</y>
+        <width>81</width>
+        <height>22</height>
+       </rect>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="tab_6">
      <attribute name="title">
@@ -299,6 +332,39 @@
       </property>
       <property name="text">
        <string>Добавить новую тару</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btn_del_container">
+      <property name="geometry">
+       <rect>
+        <x>800</x>
+        <y>520</y>
+        <width>171</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Удалить тару</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="edit_del_container_name">
+      <property name="geometry">
+       <rect>
+        <x>800</x>
+        <y>550</y>
+        <width>81</width>
+        <height>22</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="edit_del_container_volume">
+      <property name="geometry">
+       <rect>
+        <x>890</x>
+        <y>550</y>
+        <width>81</width>
+        <height>22</height>
+       </rect>
       </property>
      </widget>
     </widget>
@@ -548,7 +614,7 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>660</y>
+      <y>630</y>
       <width>211</width>
       <height>20</height>
      </rect>
@@ -561,7 +627,7 @@
     <property name="geometry">
      <rect>
       <x>290</x>
-      <y>660</y>
+      <y>630</y>
       <width>211</width>
       <height>20</height>
      </rect>
@@ -573,8 +639,8 @@
    <widget class="QPushButton" name="btn_dirtystock__stock">
     <property name="geometry">
      <rect>
-      <x>549</x>
-      <y>660</y>
+      <x>540</x>
+      <y>630</y>
       <width>171</width>
       <height>20</height>
      </rect>
@@ -586,7 +652,7 @@
    <widget class="QPushButton" name="btn_sold">
     <property name="geometry">
      <rect>
-      <x>350</x>
+      <x>440</x>
       <y>720</y>
       <width>80</width>
       <height>20</height>
@@ -603,8 +669,8 @@
    <widget class="QPushButton" name="btn_update">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>710</y>
+      <x>900</x>
+      <y>630</y>
       <width>80</width>
       <height>20</height>
      </rect>

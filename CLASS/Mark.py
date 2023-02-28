@@ -14,6 +14,7 @@ class Mark:
     def setting_btn(self):
         self.root.btn_find_mark.clicked.connect(self.click_btn_find_mark)
         self.root.btn_add_mark.clicked.connect(self.click_btn_add_mark)
+        self.root.btn_del_mark.clicked.connect(self.click_btn_del_mark)
 
     def initUI(self):
         self.setting_btn()
@@ -24,7 +25,7 @@ class Mark:
         if mark == "":
             self.update_table()
         else:
-            self.update_table(is_show_line=lambda x: x['name'] == mark)
+            self.update_table(is_show_line=lambda x: mark in x['name'])
 
     def click_btn_add_mark(self):
         class Form(QWidget):
@@ -90,6 +91,15 @@ class Mark:
         self.form = Form()
         self.form.show()
 
+    def click_btn_del_mark(self):
+        name = self.root.edit_del_mark_name.text()
+        volume = self.root.edit_del_mark_volume.text()
+        mark = MarkInfo(name, volume)
+        if not find_mark_json(mark):
+            return
+        del_mark_json(mark)
+        self.reboot_csv()
+
     def update_table(self, is_show_line=lambda x: True):
         update_table(mark_path, self.root.MarkTable, is_show_line)
 
@@ -107,10 +117,9 @@ class Mark:
             for mark in data:
                 if mark == "mark":
                     continue
-                row = {}
                 for volume in data[mark]:
                     line = data[mark][volume]
-                    row = {"name": mark, "container volume": volume, "count": line["count"],
+                    row = {"name": line["name"], "container volume": line["volume"], "count": line["count"],
                            "cost": line["cost"]}
                     write.writerow(row)
         self.update_table()

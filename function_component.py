@@ -1,52 +1,56 @@
 from SETTING import *
+from functions import *
 import json
 
 
-def comp_json_add(component):
-    with open(comp_json_path, 'r') as f:
-        data = json.load(f)
-    data[component] = {"name": component, "mass": 0, "min_mass": 0, "cost": 0}
-    with open(comp_json_path, 'w') as f:
-        json.dump(data, f)
+def comp_json_add(component: str):
+    data = read_json(comp_json_path)
+    key_comp = get_key_str(component)
+    data[key_comp] = {"name": component, "mass": 0, "min_mass": 0, "cost": 0}
+    write_json(comp_json_path, data)
 
 
 def comp_json_add_mass(component, mass, min_mass):
-    with open(comp_json_path, 'r') as f:
-        data = json.load(f)
+    data = read_json(comp_json_path)
 
-    data[component]["mass"] += mass
+    key_comp = get_key_str(component)
+    data[key_comp]["mass"] += mass
     if min_mass is not None:
-        data[component]["min_mass"] = min_mass
+        data[key_comp]["min_mass"] = min_mass
 
-    with open(comp_json_path, 'w') as f:
-        json.dump(data, f)
+    write_json(comp_json_path, data)
 
 
-def del_component(component):
-    with open(comp_json_path, 'r') as f:
-        data = json.load(f)
-        data.pop(component)
+def del_component_json(component):
+    data = read_json(comp_json_path)
 
-    with open(comp_json_path, 'w') as f:
-        json.dump(data, f)
+    key_comp = get_key_str(component)
+    data.pop(key_comp)
+
+    write_json(comp_json_path, data)
 
 
 def set_cost_component(component, new_cost):
-    with open(comp_json_path, 'r') as f:
-        data = json.load(f)
+    data = read_json(comp_json_path)
 
-    data[component]["cost"] = float(new_cost)
-    with open(comp_json_path, 'w') as f:
-        json.dump(data, f, ensure_ascii=False)
+    key_comp = get_key_str(component)
+
+    data[key_comp]["cost"] = float(new_cost)
+
+    write_json(comp_json_path, data)
 
 
 def find_component_json(component):
-    with open(comp_json_path, 'r') as f:
-        data = json.load(f)
-    return component in data
+    data = read_json(comp_json_path)
+
+    key_comp = get_key_str(component)
+
+    return key_comp in data
 
 
 def get_cost_component(component):
-    with open(comp_json_path, 'r') as f:
-        data = json.load(f)
-    return data[component]
+    data = read_json(comp_json_path)
+
+    key_comp = get_key_str(component)
+
+    return data[key_comp]

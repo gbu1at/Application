@@ -1,62 +1,60 @@
 import json
 from SETTING import *
-from functions import ContainerInfo
+from functions import *
 
 
 def set_cost_container(container: ContainerInfo, new_cost: float):
-    name = container.name
+    key_container = get_key_str(container.name)
     volume = container.volume
 
-    with open(container_json_path, 'r') as f:
-        data = json.load(f)
+    data = read_json(container_json_path)
 
-    data[name][str(volume)]["cost"] = new_cost
+    data[key_container][str(volume)]["cost"] = new_cost
 
-    with open(container_json_path, 'w') as f:
-        json.dump(data, f, ensure_ascii=False)
+    write_json(container_json_path, data)
 
 
 def find_container_json(container: ContainerInfo):
-    with open(container_json_path, 'r') as f:
-        data = json.load(f)
+    data = read_json(container_json_path)
+    key_container = get_key_str(container.name)
 
-    if container.name in data:
-        return str(container.volume) in data[container.name]
+    if key_container in data:
+        return str(container.volume) in data[key_container]
     return False
 
 
 def get_cost_container(container: ContainerInfo):
-    with open(container_json_path, 'r') as f:
-        data = json.load(f)
-    return data[container.name][str(container.volume)]["cost"]
+    data = read_json(container_json_path)
+    key_container = get_key_str(container.name)
+
+    return data[key_container][str(container.volume)]["cost"]
 
 
 def add_container_json(container: ContainerInfo):
-    with open(container_json_path, 'r') as f:
-        data = json.load(f)
-    if container.name not in data:
-        data[container.name] = {}
-    data[container.name][str(container.volume)] = {"count": 0, "cost": 0}
+    data = read_json(container_json_path)
 
-    with open(container_json_path, "w") as f:
-        json.dump(data, f)
+    key_container = get_key_str(container.name)
+
+
+    if key_container not in data:
+        data[key_container] = {}
+    data[key_container][str(container.volume)] = {"name": container.name, "volume": container.volume, "count": 0, "cost": 0}
+
+    write_json(container_json_path, data)
 
 
 def del_container_json(container: ContainerInfo):
-    with open(container_json_path, 'r') as f:
-        data = json.load(f)
+    data = read_json(container_json_path)
+    key_container = get_key_str(container.name)
 
-    data[container.name].pop(str(container.volume))
+    data[key_container].pop(str(container.volume))
 
-    with open(container_json_path, "w") as f:
-        json.dump(data, f)
+    write_json(container_json_path, data)
 
 
 def plus_container_count_json(container: ContainerInfo, count):
-    with open(container_json_path, 'r') as f:
-        data = json.load(f)
+    data = read_json(container_json_path)
+    key_container = get_key_str(container.name)
+    data[key_container][str(container.volume)]["count"] += count
 
-    data[container.name][str(container.volume)]["count"] += count
-
-    with open(container_json_path, 'w') as f:
-        json.dump(data, f)
+    write_json(container_json_path, data)

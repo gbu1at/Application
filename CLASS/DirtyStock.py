@@ -21,7 +21,7 @@ class DirtyStock():
         if product == "":
             self.update_table()
         else:
-            self.update_table(is_show_line=lambda x: x['name'] == product)
+            self.update_table(is_show_line=lambda x: product in x['name'])
 
     def update_table(self, is_show_line=lambda x: True):
         update_table(dirtystock_path, self.root.DirtyStockTable, is_show_line)

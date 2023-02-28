@@ -17,10 +17,11 @@ class Container:
     def setting_btn(self):
         self.root.btn_find_container.clicked.connect(self.click_btn_find_container)
         self.root.btn_add_container.clicked.connect(self.click_btn_add_container)
+        self.root.btn_del_container.clicked.connect(self.click_btn_del_container)
 
     def click_btn_find_container(self):
         name = self.root.edit_find_container.text()
-        self.update_table(lambda x: x["name"] == name)
+        self.update_table(lambda x: name in x["name"])
 
     def click_btn_add_container(self):
         class Form(QWidget):
@@ -95,6 +96,15 @@ class Container:
         plus_container_count_json(container, count)
         self.reboot_csv()
 
+    def click_btn_del_container(self):
+        name = self.root.edit_del_container_name.text()
+        volume = self.root.edit_del_container_volume.text()
+        cnt = ContainerInfo(name, volume)
+        if not find_container_json(cnt):
+            return
+        del_container_json(cnt)
+        self.reboot_csv()
+
     def reboot_csv(self):
         with open(container_json_path, 'r') as f:
             data = json.load(f)
@@ -107,7 +117,7 @@ class Container:
                 row = {}
                 for volume in data[container]:
                     line = data[container][volume]
-                    row = {"name": container, "volume": volume, "count": line["count"], "cost": line["cost"]}
+                    row = {"name": line["name"], "volume": line["volume"], "count": line["count"], "cost": line["cost"]}
                     write.writerow(row)
         self.update_table()
 

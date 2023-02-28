@@ -24,7 +24,7 @@ class Product:
         if product == "":
             self.update_table()
         else:
-            self.update_table(is_show_line=lambda x: x['name'] == product)
+            self.update_table(is_show_line=lambda x: product in x['name'])
 
     def update_table(self, is_show_line=lambda x: True):
         update_table(product_path, self.root.ProductTable, is_show_line)
@@ -45,7 +45,7 @@ class Product:
             w.writeheader()
             for product in data:
                 if product == "product": continue
-                row = {"name": product}
+                row = {}
                 for line in data[product]:
                     if line == "recipe": continue
                     row[line] = data[product][line]

@@ -31,7 +31,7 @@ class Component:
         if component == "":
             self.update_table()
         else:
-            self.update_table(lambda x: x['name'] == component)
+            self.update_table(lambda x: component in x['name'])
 
     def click_radio_btn_lack_components(self):
         if self.root.radio_btn_lack_components.isChecked():
@@ -43,7 +43,7 @@ class Component:
         class Form(QWidget):
             def __init__(other):
                 super().__init__()
-                other.width = 170
+                other.width = 210
                 other.height = 280
                 other.initUI()
 
@@ -108,7 +108,7 @@ class Component:
         text = self.root.edit_del_component.text()
         if not find_component_json(text):
             return
-        del_component(text)
+        del_component_json(text)
         self.reboot_csv()
 
     def update_table(self, is_show_line=lambda x: True):

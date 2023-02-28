@@ -1,8 +1,1 @@
-{
-  "component": {
-    "name": "",
-    "mass": 0,
-    "min_mass": 0,
-    "cost": 0
-  }
-}
+{"component": {"name": "", "mass": 0, "min_mass": 0, "cost": 0}, "комп1": {"name": "комп 1", "mass": 279.0, "min_mass": 100.0, "cost": 11.0}, "комп2": {"name": "комп 2", "mass": 0.0, "min_mass": 0.0, "cost": 0.0}, "комп3": {"name": "комп 3", "mass": -679.0, "min_mass": 50.0, "cost": 10.0}}

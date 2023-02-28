@@ -1,8 +1,1 @@
-{
-  "mark": {
-    "container volume": {
-      "count": 0,
-      "cost": 0
-    }
-  }
-}
+{"mark": {"container volume": {"name": null, "volume": 0, "count": 0, "cost": 0}}, "этик1": {}, "этик2": {}}

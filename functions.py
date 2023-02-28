@@ -87,4 +87,8 @@ def read_json(file_json):
 
 def write_json(file_json, data):
     with open(file_json, 'w') as f:
-        json.dump(data, f)
+        json.dump(data, f, ensure_ascii=False)
+
+
+def get_key_str(data: str):
+    return data.replace("\n", "").replace("\t", "").replace(" ", "").lower()
