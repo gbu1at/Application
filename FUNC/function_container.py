@@ -1,6 +1,6 @@
 import json
 from SETTING import *
-from functions import *
+from FUNC.functions import *
 
 
 def set_cost_container(container: ContainerInfo, new_cost: float):
@@ -35,10 +35,10 @@ def add_container_json(container: ContainerInfo):
 
     key_container = get_key_str(container.name)
 
-
     if key_container not in data:
         data[key_container] = {}
-    data[key_container][str(container.volume)] = {"name": container.name, "volume": container.volume, "count": 0, "cost": 0}
+    data[key_container][str(container.volume)] = {"name": container.name, "volume": container.volume, "count": 0,
+                                                  "cost": 0, "sum cost": 0}
 
     write_json(container_json_path, data)
 
@@ -58,3 +58,28 @@ def plus_container_count_json(container: ContainerInfo, count):
     data[key_container][str(container.volume)]["count"] += count
 
     write_json(container_json_path, data)
+
+
+def update_container_sum_cost():
+    data = read_json(container_json_path)
+    for key in data:
+        if key == "container": continue
+        for vol in data[key]:
+            obj = data[key][vol]
+            obj["sum cost"] = float(obj["cost"]) * float(obj["count"])
+
+    write_json(container_json_path, data)
+
+
+def data_container_processing_for_excel():
+    data = read_json(container_json_path)
+    df = {}
+    for key in data["container"]["volume"]:
+        df[key] = []
+    for key in data:
+        if key == "container": continue
+        for vol in data[key]:
+            obj = data[key][vol]
+            for col in obj:
+                df[col].append(obj[col])
+    return df

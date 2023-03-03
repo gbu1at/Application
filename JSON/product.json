@@ -1,1 +1,1 @@
-{"product": {"mass": 0, "cost": 0, "recipe": null}, "продукт2": {"name": "продукт 2", "mass": 1200.0, "cost": 10.605, "recipe": {"комп 1": 60.5, "комп 3": 39.5}}}
+{"product": {"name": "", "mass": 0, "cost": 0, "recipe": null, "sum cost": 0.0}, "продукт2": {"name": "продукт 2", "mass": 1200.0, "cost": 10.605, "recipe": {"комп 1": 60.5, "комп 3": 39.5}, "sum cost": 12726.0}}

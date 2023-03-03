@@ -1,9 +1,9 @@
 from SETTING import *
-from functions import *
+from FUNC.functions import *
 import json
-from function_product import get_cost_product
-from function_container import get_cost_container
-from function_mark import get_cost_mark
+from FUNC.function_product import get_cost_product
+from FUNC.function_container import get_cost_container
+from FUNC.function_mark import get_cost_mark
 
 
 def get_cost_finally_product(product: FinallyProduct):
@@ -85,3 +85,14 @@ def update_cost_finally_product(product: FinallyProduct):
 
 def update_volume_finally_product(product: FinallyProduct):
     ...
+
+
+def update_finally_product_sum_cost():
+    data = read_json(finally_product_json_path)
+
+    for key in data:
+        for mark_cont in data[key]:
+            for vol in data[key][mark_cont]:
+                obj = data[key][mark_cont][vol]
+                obj["sum cost"] = float(obj["count"]) * float(obj["cost"])
+    write_json(finally_product_json_path, data)

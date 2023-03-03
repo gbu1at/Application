@@ -1,17 +1,8 @@
-from SETTING import *
-import json
+from FUNC.function_product import data_product_processing_for_excel
+from FUNC.functions import write_to_excel
+from FUNC.function_mark import data_mark_processing_for_excel
 
-with open(container_json_path, 'r') as f:
-    data = json.load(f)
 
-for x in data:
-    if (x == "container"): continue
-    print(data[x])
-    for v in list(data[x]):
-        vol = float(v) / 1000
-        data[x][vol] = data[x][v]
-        data[x].pop(v)
-        data[x][vol]["volume"] = str(vol)
 
-with open(container_json_path, 'w') as f:
-    json.dump(data, f, ensure_ascii=False)
+
+write_to_excel("file.xlsx", data)

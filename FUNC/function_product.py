@@ -1,6 +1,6 @@
 import json
 from SETTING import *
-from functions import *
+from FUNC.functions import *
 
 
 def find_product_json(product):
@@ -42,7 +42,7 @@ def add_product_json(product):
 
     key_product = get_key_str(product)
 
-    data[key_product] = {"name": product, "mass": 0, "cost": 0, "recipe": None}
+    data[key_product] = {"name": product, "mass": 0, "cost": 0, "recipe": None, "sum cost": 0}
 
     write_json(product_json_path, data)
 
@@ -70,3 +70,25 @@ def get_recipe(product):
     key_product = get_key_str(product)
 
     return data[key_product]["recipe"]
+
+
+def update_product_sum_cost():
+    data = read_json(product_json_path)
+    for key in data:
+        obj = data[key]
+        obj["sum cost"] = float(obj["cost"]) * float(obj["mass"])
+    write_json(product_json_path, data)
+
+
+def data_product_processing_for_excel():
+    data = read_json(product_json_path)
+    df = {}
+    for key in data["product"]:
+        if key == "recipe": continue
+        df[key] = []
+    for key in data:
+        if key == "product": continue
+        for col in data[key]:
+            if col == "recipe": continue
+            df[col].append(data[key][col])
+    return df

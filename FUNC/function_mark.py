@@ -1,6 +1,5 @@
 from SETTING import *
-from functions import MarkInfo
-from functions import *
+from FUNC.functions import *
 import json
 
 
@@ -37,7 +36,8 @@ def add_mark_json(mark: MarkInfo):
 
     if key_mark not in data:
         data[key_mark] = {}
-    data[key_mark][mark.container_volume] = {"name": mark.name, "volume": mark.container_volume, "count": 0, "cost": 0}
+    data[key_mark][mark.container_volume] = {"name": mark.name, "volume": mark.container_volume, "count": 0, "cost": 0,
+                                             "sum cost": 0}
 
     write_json(mark_json_path, data)
 
@@ -54,8 +54,32 @@ def plus_mark_count_json(mark: MarkInfo, count):
 
 def del_mark_json(mark: MarkInfo):
     data = read_json(mark_json_path)
-    key_container = get_key_str(mark.name)
+    key_mark = get_key_str(mark.name)
 
-    data[key_container].pop(str(mark.container_volume))
+    data[key_mark].pop(str(mark.container_volume))
 
     write_json(mark_json_path, data)
+
+
+def update_mark_sum_cost():
+    data = read_json(mark_json_path)
+    for key in data:
+        line = data[key]
+        for vol in line:
+            obj = line[vol]
+            obj["sum cost"] = float(obj["cost"]) * float(obj["count"])
+
+    write_json(mark_json_path, data)
+
+
+def data_mark_processing_for_excel():
+    data = read_json(mark_json_path)
+    df = {}
+    for key in data["mark"]["container volume"]:
+        df[key] = []
+    for key in data:
+        if key == "component": continue
+        for vol in data[key]:
+            for col in data[key][vol]:
+                df[col].append(data[key][vol][col])
+    return df

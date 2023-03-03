@@ -1,5 +1,4 @@
-from functions import *
-from function_dirty_stock import *
+from FUNC.function_dirty_stock import *
 from SETTING import *
 import csv
 
@@ -24,7 +23,11 @@ class DirtyStock():
             self.update_table(is_show_line=lambda x: product in x['name'])
 
     def update_table(self, is_show_line=lambda x: True):
+        update_dirtystock_sum_cost()
         update_table(dirtystock_path, self.root.DirtyStockTable, is_show_line)
+
+    def update_excel(self):
+        write_to_excel(dirtystock_excel_path, data_dirty_stock_processing_for_excel())
 
     def add(self, product: ProductInfo, count):
         if not find_dirty_stock_json(product):

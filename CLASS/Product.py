@@ -1,8 +1,4 @@
-import csv
-import json
-
-from functions import *
-from function_product import *
+from FUNC.function_product import *
 from SETTING import *
 
 
@@ -27,13 +23,17 @@ class Product:
             self.update_table(is_show_line=lambda x: product in x['name'])
 
     def update_table(self, is_show_line=lambda x: True):
+        update_product_sum_cost()
         update_table(product_path, self.root.ProductTable, is_show_line)
+
+    def update_excel(self):
+        write_to_excel(product_excel_path, data_product_processing_for_excel())
 
     def add(self, product, mass):
         if not find_product_json(product):
             add_product_json(product)
         plus_product_mass_json(product, mass)
-        
+
     def reboot_csv(self):
         self.update_cost_product()
 
@@ -41,7 +41,7 @@ class Product:
             data = json.load(f)
 
         with open(product_path, 'w') as f:
-            w = csv.DictWriter(f, fieldnames=['name', 'mass', 'cost'])
+            w = csv.DictWriter(f, fieldnames=['name', 'mass', 'cost', "sum cost"])
             w.writeheader()
             for product in data:
                 if product == "product": continue

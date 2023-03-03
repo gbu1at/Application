@@ -1,8 +1,5 @@
-import json
-
-from SETTING import *
-from functions import *
-from function_component import *
+from FUNC.function_component import *
+from PyQt5 import uic
 import csv
 
 
@@ -16,15 +13,11 @@ class Component:
         self.root.btn_find_component.clicked.connect(self.click_btn_find_component)
         self.root.radio_btn_lack_components.toggled.connect(self.click_radio_btn_lack_components)
         self.root.btn_add_component.clicked.connect(self.click_btn_add_component)
-        self.root.btn_set_cost_component.clicked.connect(self.click_btn_set_cost_component)
         self.root.btn_del_component.clicked.connect(self.click_btn_del_component)
 
     def initUI(self):
         self.setting_btn()
         self.update_table()
-
-    def click_btn_set_cost_component(self):
-        ...
 
     def click_btn_find_component(self):
         component = self.root.edit_find_component.text()
@@ -43,40 +36,10 @@ class Component:
         class Form(QWidget):
             def __init__(other):
                 super().__init__()
-                other.width = 210
-                other.height = 280
+                uic.loadUi("./UI/form_component_add.ui", other)
                 other.initUI()
 
             def initUI(other):
-                other.setGeometry(100, 100, other.height, other.width)
-                name = QLabel("название компонента", other)
-                other.edit_name = QLineEdit(other)
-                name.move(10, 10)
-                other.edit_name.move(140, 10)
-
-                mass = QLabel("масса", other)
-                other.edit_mass = QLineEdit(other)
-
-                mass.move(10, 50)
-                other.edit_mass.move(140, 50)
-
-                min_mass = QLabel("минимальная масса", other)
-                other.edit_min_mass = QLineEdit(other)
-
-                min_mass.move(10, 90)
-                other.edit_min_mass.move(140, 90)
-
-                cost = QLabel("цена за кг", other)
-                other.edit_cost = QLineEdit(other)
-
-                cost.move(10, 130)
-                other.edit_cost.move(140, 130)
-
-                other.btnOK = QPushButton("Apply", other)
-                other.btnOK.move(10, 180)
-                other.btnExit = QPushButton("Exit", other)
-                other.btnExit.move(110, 180)
-
                 other.setting_btn()
 
             def setting_btn(other):
@@ -112,7 +75,11 @@ class Component:
         self.reboot_csv()
 
     def update_table(self, is_show_line=lambda x: True):
+        update_component_sum_cost()
         update_table(comp_path, self.root.ComponentTable, is_show_line)
+
+    def update_excel(self):
+        write_to_excel(comp_excel_path, data_component_processing_for_excel())
 
     def add(self, component, mass, min_mass=None):
         if not find_component_json(component):

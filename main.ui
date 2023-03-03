@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -107,19 +107,6 @@
        <string>Добавить компонент</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="btn_set_cost_component">
-      <property name="geometry">
-       <rect>
-        <x>290</x>
-        <y>560</y>
-        <width>191</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>изменить стоимость компонента</string>
-      </property>
-     </widget>
      <widget class="QPushButton" name="btn_del_component">
       <property name="geometry">
        <rect>
@@ -194,19 +181,6 @@
         <width>131</width>
         <height>22</height>
        </rect>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="btn_add_new_mark">
-      <property name="geometry">
-       <rect>
-        <x>30</x>
-        <y>560</y>
-        <width>171</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Добавить новую этикетку</string>
       </property>
      </widget>
      <widget class="QPushButton" name="btn_add_mark">
@@ -321,19 +295,6 @@
        </rect>
       </property>
      </widget>
-     <widget class="QPushButton" name="btn_add_new_container">
-      <property name="geometry">
-       <rect>
-        <x>30</x>
-        <y>560</y>
-        <width>171</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Добавить новую тару</string>
-      </property>
-     </widget>
      <widget class="QPushButton" name="btn_del_container">
       <property name="geometry">
        <rect>
@@ -423,7 +384,7 @@
     </widget>
     <widget class="QWidget" name="tab_3">
      <attribute name="title">
-      <string>Грязный склад</string>
+      <string>Фасовка</string>
      </attribute>
      <widget class="QTableWidget" name="DirtyStockTable">
       <property name="geometry">
@@ -633,7 +594,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Готовая продукция -&gt; Грязный склад</string>
+     <string>Готовая продукция -&gt; Фасовка</string>
     </property>
    </widget>
    <widget class="QPushButton" name="btn_dirtystock__stock">
@@ -677,6 +638,19 @@
     </property>
     <property name="text">
      <string>обновить</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btn_print_excel">
+    <property name="geometry">
+     <rect>
+      <x>900</x>
+      <y>670</y>
+      <width>80</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>распечатать</string>
     </property>
    </widget>
   </widget>

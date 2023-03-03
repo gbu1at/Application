@@ -1,14 +1,1 @@
-{
-  "product": {
-    "container&mark": {
-      "volume": {
-        "name": null,
-        "container name": null,
-        "mark": null,
-        "count": 0,
-        "cost": 0,
-        "volume": 0
-      }
-    }
-  }
-}
+{"product": {"container&mark": {"volume": {"name": null, "container name": null, "mark": null, "count": 0, "cost": 0, "volume": 0, "sum cost": 0.0}}}, "продукт2": {"флаконбелыйподтоник&этик1": {"0.1": {"name": "продукт 2", "container name": "флакон белый под тоник", "mark": "этик 1", "count": 1000.0, "cost": 21.060499999999998, "volume": "0.1", "sum cost": 21060.499999999996}}}}

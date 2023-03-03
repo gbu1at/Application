@@ -1,10 +1,9 @@
-from functions import *
-from function_finally_product import *
+from FUNC.function_finally_product import *
 from SETTING import *
 import csv
 
 
-class FinishedProducts():
+class FinallyProducts():
     def __init__(self, root):
         self.root = root
         self.initUI()
@@ -31,6 +30,7 @@ class FinishedProducts():
             self.update_table(is_show_line=lambda x: x['name'] == product)
 
     def update_table(self, is_show_line=lambda x: True):
+        update_finally_product_sum_cost()
         update_table(stock_path, self.root.StockTable, is_show_line)
 
     def add(self, product: FinallyProduct, count):

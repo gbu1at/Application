@@ -2,15 +2,14 @@ from PyQt5 import uic
 from CLASS.Component import Component
 from CLASS.Product import Product
 from CLASS.Mark import Mark
-from CLASS.FinishProduct import FinishedProducts
+from CLASS.FinallyProduct import FinallyProducts
 from CLASS.DirtyStock import DirtyStock
 from CLASS.SoldGoods import SoldGoods
 from CLASS.Container import Container
-from functions import *
-from function_component import *
-from function_product import *
-from function_mark import *
-from function_dirty_stock import *
+from FUNC.function_component import *
+from FUNC.function_product import *
+from FUNC.function_mark import *
+from FUNC.function_dirty_stock import *
 
 import json
 import sys
@@ -23,7 +22,7 @@ class Application(QMainWindow):
         self.COMPONENT = Component(self, self.tab)
         self.PRODUCT = Product(self, self.tab_2)
         self.DIRTYSTOCK = DirtyStock(self)
-        self.STOCK = FinishedProducts(self)
+        self.STOCK = FinallyProducts(self)
         self.MARK = Mark(self)
         self.SOLDGOODS = SoldGoods(self)
         self.CONTAINER = Container(self)
@@ -35,47 +34,23 @@ class Application(QMainWindow):
         self.btn_dirtystock__stock.clicked.connect(self.click_dirtystock__stock)
         self.btn_sold.clicked.connect(self.click_sold)
         self.btn_update.clicked.connect(lambda: update(self))
+        self.btn_print_excel.clicked.connect(lambda: print_excel(self))
 
     def click_component__product(self):
         class FunctionComponent__Product(QWidget):
             def __init__(other):
                 super().__init__()
-                other.width = 500
-                other.height = 400
+                uic.loadUi("UI/function_component__product.ui", other)
                 other.initUI()
 
             def initUI(other):
-                other.setGeometry(100, 100, other.height, other.width)
-                other.btnOK = QPushButton("Apply", other)
-                other.btnOK.move(10, 430)
-                other.btnExit = QPushButton("Exit", other)
-                other.btnExit.move(110, 430)
+                other.setting_btn()
+
+            def setting_btn(other):
                 other.btnOK.clicked.connect(other.btnOK_click)
                 other.btnExit.clicked.connect(other.btnExit_click)
-
-                other.product_edit = QLineEdit(other)
-                label_product = QLabel("продкут", other)
-                label_product.move(10, 20)
-                other.product_edit.move(110, 20)
-
-                label_mass = QLabel("масса", other)
-                label_mass.move(10, 100)
-                other.mass_edit = QLineEdit(other)
-                other.mass_edit.move(110, 100)
-
-                other.radio_btn = QRadioButton("новая рецептура", other)
-                other.recipe_text = QTextEdit(other)
-                other.recipe_text.resize(350, 100)
-                other.recipe_text.move(10, 150)
-                other.radio_btn.move(10, 130)
-
-                other.old_radio_btn = QRadioButton("старая рецептура", other)
-                other.old_recipe_text = QTextBrowser(other)
-                other.old_recipe_text.resize(350, 100)
-                other.old_recipe_text.move(10, 300)
-                other.old_radio_btn.move(10, 280)
-
                 other.old_radio_btn.toggled.connect(other.click_old_radio_btn)
+
 
             def click_old_radio_btn(other):
                 product = other.product_edit.text()
@@ -133,37 +108,12 @@ class Application(QMainWindow):
         class FunctionProduct__Dirtystock(QWidget):
             def __init__(other):
                 super().__init__()
-                other.width = 300
-                other.height = 300
+                uic.loadUi("UI/function_product__dirtystock.ui", other)
                 other.initUI()
 
             def initUI(other):
-                other.setGeometry(100, 100, other.height, other.width)
-
-                other.product_edit = QLineEdit(other)
-                label_product = QLabel("продкут", other)
-                label_product.move(10, 20)
-                other.product_edit.move(110, 20)
-
-                label_container_volume = QLabel("объем тары", other)
-                label_container_volume.move(10, 80)
-                other.container_volume_edit = QLineEdit(other)
-                other.container_volume_edit.move(110, 80)
-
-                label_count = QLabel("кол-во тары", other)
-                label_count.move(10, 140)
-                other.count = QLineEdit(other)
-                other.count.move(110, 140)
-
-                label_container_name = QLabel("тара", other)
-                label_container_name.move(10, 200)
-                other.container_name_edit = QLineEdit(other)
-                other.container_name_edit.move(110, 200)
-
-                other.btnOK = QPushButton("Apply", other)
-                other.btnOK.move(10, 260)
-                other.btnExit = QPushButton("Exit", other)
-                other.btnExit.move(110, 260)
+                other.setting_btn()
+            def setting_btn(other):
                 other.btnOK.clicked.connect(other.btnOK_click)
                 other.btnExit.clicked.connect(other.btnExit_click)
 
@@ -172,6 +122,7 @@ class Application(QMainWindow):
                 try:
                     container_name = other.container_name_edit.text()
                     container_volume = float(other.container_volume_edit.text())
+                    cap_name = other.cap_name_edit.text()
                     count = float(other.count.text())
                 except ValueError as ex:
                     print("некорректные данные")
@@ -193,43 +144,10 @@ class Application(QMainWindow):
         class FunctionDirtyStock__Stock(QWidget):
             def __init__(other):
                 super().__init__()
-                other.height = 400
-                other.width = 440
+                uic.loadUi("UI/function_dirtystock__stock.ui", other)
                 other.initUI()
 
             def initUI(other):
-                other.setGeometry(100, 100, other.height, other.width)
-
-                other.product_edit = QLineEdit(other)
-                label_product = QLabel("продкут", other)
-                label_product.move(10, 20)
-                other.product_edit.move(110, 20)
-
-                label_container_volume = QLabel("объем тары", other)
-                label_container_volume.move(10, 100)
-                other.container_volume_edit = QLineEdit(other)
-                other.container_volume_edit.move(110, 100)
-
-                label_count = QLabel("кол-во тары", other)
-                label_count.move(10, 180)
-                other.count = QLineEdit(other)
-                other.count.move(110, 180)
-
-                label_container_name = QLabel("название тары", other)
-                label_container_name.move(10, 260)
-                other.container_name_edit = QLineEdit(other)
-                other.container_name_edit.move(110, 260)
-
-                label_mark = QLabel("этикетка", other)
-                label_mark.move(10, 340)
-                other.mark_edit = QLineEdit(other)
-                other.mark_edit.move(110, 340)
-
-                other.btnOK = QPushButton("Apply", other)
-                other.btnOK.move(10, 400)
-                other.btnExit = QPushButton("Exit", other)
-                other.btnExit.move(110, 400)
-
                 other.setting_btn()
 
             def setting_btn(other):
@@ -357,6 +275,7 @@ class Application(QMainWindow):
         mass = count * container.volume
         if not find_product_json(product):
             raise Exception("нет продукта")
+
 
         self.PRODUCT.minus(product, mass)
         self.CONTAINER.minus(container, count)

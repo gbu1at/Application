@@ -1,8 +1,7 @@
-import csv
-
-from function_container import *
-from functions import *
+from FUNC.function_container import *
+from FUNC.functions import *
 from SETTING import *
+from PyQt5 import uic
 
 
 class Container:
@@ -27,40 +26,10 @@ class Container:
         class Form(QWidget):
             def __init__(other):
                 super().__init__()
-                other.width = 210
-                other.height = 280
+                uic.loadUi("UI/form_container_add.ui", other)
                 other.initUI()
 
             def initUI(other):
-                other.setGeometry(100, 100, other.height, other.width)
-                name = QLabel("название тары", other)
-                other.edit_name = QLineEdit(other)
-                name.move(10, 10)
-                other.edit_name.move(140, 10)
-
-                count = QLabel("кол-во", other)
-                other.edit_count = QLineEdit(other)
-
-                count.move(10, 50)
-                other.edit_count.move(140, 50)
-
-                container_volume = QLabel("объем", other)
-                other.edit_container_volume = QLineEdit(other)
-
-                container_volume.move(10, 90)
-                other.edit_container_volume.move(140, 90)
-
-                cost = QLabel("стоимость штуки", other)
-                other.edit_cost = QLineEdit(other)
-
-                cost.move(10, 130)
-                other.edit_cost.move(140, 130)
-
-                other.btnOK = QPushButton("Apply", other)
-                other.btnOK.move(10, 180)
-                other.btnExit = QPushButton("Exit", other)
-                other.btnExit.move(110, 180)
-
                 other.setting_btn()
 
             def setting_btn(other):
@@ -88,7 +57,11 @@ class Container:
         self.form.show()
 
     def update_table(self, is_show_line=lambda x: True):
+        update_container_sum_cost()
         update_table(container_path, self.root.ContainerTable, is_show_line)
+
+    def update_excel(self):
+        write_to_excel(container_excel_path, data_container_processing_for_excel())
 
     def add(self, container: ContainerInfo, count):
         if not find_container_json(container):
@@ -109,7 +82,7 @@ class Container:
         with open(container_json_path, 'r') as f:
             data = json.load(f)
         with open(container_path, 'w') as f:
-            write = csv.DictWriter(f, fieldnames=["name", "volume", "count", "cost"])
+            write = csv.DictWriter(f, fieldnames=list(data["container"]["volume"].keys()))
             write.writeheader()
             for container in data:
                 if container == "container":
@@ -117,8 +90,7 @@ class Container:
                 row = {}
                 for volume in data[container]:
                     line = data[container][volume]
-                    row = {"name": line["name"], "volume": line["volume"], "count": line["count"], "cost": line["cost"]}
-                    write.writerow(row)
+                    write.writerow(line)
         self.update_table()
 
     def minus(self, container: ContainerInfo, count):

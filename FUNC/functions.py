@@ -2,6 +2,7 @@ import csv
 import json
 from SETTING import *
 from PyQt5.QtWidgets import QTableWidgetItem
+from pandas import DataFrame
 
 
 class ContainerInfo:
@@ -92,3 +93,16 @@ def write_json(file_json, data):
 
 def get_key_str(data: str):
     return data.replace("\n", "").replace("\t", "").replace(" ", "").lower()
+
+
+def write_to_excel(excel_file, data):
+    x = DataFrame(data)
+    x.to_excel(excel_file)
+
+
+def print_excel(root):
+    root.COMPONENT.update_excel()
+    root.MARK.update_excel()
+    root.CONTAINER.update_excel()
+    root.PRODUCT.update_excel()
+    root.DIRTYSTOCK.update_excel()

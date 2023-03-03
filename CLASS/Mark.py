@@ -1,9 +1,5 @@
-import json
-
-from functions import *
-from SETTING import *
-import csv
-from function_mark import *
+from FUNC.function_mark import *
+from PyQt5 import uic
 
 
 class Mark:
@@ -31,40 +27,10 @@ class Mark:
         class Form(QWidget):
             def __init__(other):
                 super().__init__()
-                other.width = 210
-                other.height = 280
+                uic.loadUi("UI/form_mark_add.ui", other)
                 other.initUI()
 
             def initUI(other):
-                other.setGeometry(100, 100, other.height, other.width)
-                name = QLabel("название этикетки", other)
-                other.edit_name = QLineEdit(other)
-                name.move(10, 10)
-                other.edit_name.move(140, 10)
-
-                count = QLabel("кол-во", other)
-                other.edit_count = QLineEdit(other)
-
-                count.move(10, 50)
-                other.edit_count.move(140, 50)
-
-                container_volume = QLabel("объем", other)
-                other.edit_container_volume = QLineEdit(other)
-
-                container_volume.move(10, 90)
-                other.edit_container_volume.move(140, 90)
-
-                cost = QLabel("стоимость штуки", other)
-                other.edit_cost = QLineEdit(other)
-
-                cost.move(10, 130)
-                other.edit_cost.move(140, 130)
-
-                other.btnOK = QPushButton("Apply", other)
-                other.btnOK.move(10, 180)
-                other.btnExit = QPushButton("Exit", other)
-                other.btnExit.move(110, 180)
-
                 other.setting_btn()
 
             def setting_btn(other):
@@ -101,7 +67,11 @@ class Mark:
         self.reboot_csv()
 
     def update_table(self, is_show_line=lambda x: True):
+        update_mark_sum_cost()
         update_table(mark_path, self.root.MarkTable, is_show_line)
+
+    def update_excel(self):
+        write_to_excel(mark_excel_path, data_mark_processing_for_excel())
 
     def add(self, mark: MarkInfo, count: float):
         if not find_mark_json(mark):
@@ -112,16 +82,14 @@ class Mark:
         with open(mark_json_path, 'r') as f:
             data = json.load(f)
         with open(mark_path, "w") as f:
-            write = csv.DictWriter(f, fieldnames=["name", "container volume", "count", "cost"])
+            write = csv.DictWriter(f, fieldnames=list(data["mark"]["container volume"].keys()))
             write.writeheader()
             for mark in data:
                 if mark == "mark":
                     continue
                 for volume in data[mark]:
                     line = data[mark][volume]
-                    row = {"name": line["name"], "container volume": line["volume"], "count": line["count"],
-                           "cost": line["cost"]}
-                    write.writerow(row)
+                    write.writerow(line)
         self.update_table()
 
     def minus(self, mark: MarkInfo, count: float):
