@@ -83,3 +83,14 @@ def data_container_processing_for_excel():
             for col in obj:
                 df[col].append(obj[col])
     return df
+
+
+def data_container_to_csv():
+    data = read_json(container_json_path)
+    rows = []
+    for container in data:
+        if container == "container":
+            continue
+        for volume in data[container]:
+            rows.append(data[container][volume])
+    return rows

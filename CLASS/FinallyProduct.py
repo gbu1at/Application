@@ -45,22 +45,8 @@ class FinallyProducts():
         with open(stock_path, "w") as f:
             write = csv.DictWriter(f, fieldnames=list(data["product"]["container&mark"]["volume"]))
             write.writeheader()
-            for product in data:
-                if product == "product": continue
-                for key in data[product]:
-                    x = data[product][key]
-                    for volume in x:
-                        line = x[volume]
-                        cnt_name = line["container name"]
-                        mark = line["mark"]
-                        volume = line["volume"]
-                        pr = FinallyProduct(ProductInfo(product, ContainerInfo(cnt_name, volume)), MarkInfo(mark, volume))
-                        update_finally_product(pr)
-
-                        row = {}
-                        for col in line:
-                            row[col] = line[col]
-                        write.writerow(row)
+            rows = data_finally_product_to_csv()
+            write.writerows(rows)
 
         self.update_table()
 

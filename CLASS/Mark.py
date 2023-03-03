@@ -84,12 +84,8 @@ class Mark:
         with open(mark_path, "w") as f:
             write = csv.DictWriter(f, fieldnames=list(data["mark"]["container volume"].keys()))
             write.writeheader()
-            for mark in data:
-                if mark == "mark":
-                    continue
-                for volume in data[mark]:
-                    line = data[mark][volume]
-                    write.writerow(line)
+            rows = data_mark_to_csv()
+            write.writerows(rows)
         self.update_table()
 
     def minus(self, mark: MarkInfo, count: float):

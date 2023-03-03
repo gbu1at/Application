@@ -92,3 +92,16 @@ def data_product_processing_for_excel():
             if col == "recipe": continue
             df[col].append(data[key][col])
     return df
+
+
+def data_product_to_csv():
+    data = read_json(product_json_path)
+    rows = []
+    for product in data:
+        if product == "product": continue
+        row = {}
+        for line in data[product]:
+            if line == "recipe": continue
+            row[line] = data[product][line]
+        rows.append(row)
+    return rows

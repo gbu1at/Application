@@ -10,6 +10,8 @@ from FUNC.function_component import *
 from FUNC.function_product import *
 from FUNC.function_mark import *
 from FUNC.function_dirty_stock import *
+from FUNC.function_container import *
+from FUNC.function_finally_product import *
 
 import json
 import sys
@@ -50,7 +52,6 @@ class Application(QMainWindow):
                 other.btnOK.clicked.connect(other.btnOK_click)
                 other.btnExit.clicked.connect(other.btnExit_click)
                 other.old_radio_btn.toggled.connect(other.click_old_radio_btn)
-
 
             def click_old_radio_btn(other):
                 product = other.product_edit.text()
@@ -113,6 +114,7 @@ class Application(QMainWindow):
 
             def initUI(other):
                 other.setting_btn()
+
             def setting_btn(other):
                 other.btnOK.clicked.connect(other.btnOK_click)
                 other.btnExit.clicked.connect(other.btnExit_click)
@@ -184,42 +186,10 @@ class Application(QMainWindow):
         class FunctionStock__SoldGoods(QWidget):
             def __init__(other):
                 super().__init__()
-                other.height = 400
-                other.width = 440
+                uic.loadUi("UI/function_sold.ui", other)
                 other.initUI()
 
             def initUI(other):
-                other.setGeometry(100, 100, other.height, other.width)
-                other.btnOK = QPushButton("Apply", other)
-                other.btnOK.move(10, 400)
-                other.btnExit = QPushButton("Exit", other)
-                other.btnExit.move(110, 400)
-
-                other.product_edit = QLineEdit(other)
-                label_product = QLabel("продкут", other)
-                label_product.move(10, 20)
-                other.product_edit.move(110, 20)
-
-                label_container_volume = QLabel("объем тары", other)
-                label_container_volume.move(10, 100)
-                other.container_volume_edit = QLineEdit(other)
-                other.container_volume_edit.move(110, 100)
-
-                label_count = QLabel("кол-во тары", other)
-                label_count.move(10, 180)
-                other.count = QLineEdit(other)
-                other.count.move(110, 180)
-
-                label_cost = QLabel("стоимость штуки", other)
-                label_cost.move(10, 260)
-                other.cost_edit = QLineEdit(other)
-                other.cost_edit.move(110, 260)
-
-                label_price = QLabel("цена за штуку", other)
-                label_price.move(10, 340)
-                other.price_edit = QLineEdit(other)
-                other.price_edit.move(110, 340)
-
                 other.setting_btn()
 
             def setting_btn(other):
@@ -228,13 +198,20 @@ class Application(QMainWindow):
 
             def click_btnOK(other):
                 product = other.product_edit.text()
-                container_volume = float(other.container_volume_edit.text())
-                count = float(other.count.text())
-                cost = float(other.cost_edit.text())
-                price = float(other.price_edit.text())
+                container_name = other.container_name_edit.text()
+                mark_name = other.mark_name_edit.text()
                 try:
-                    self.stock__soldgoods(product=product, count=count, cost=cost, container_volume=container_volume,
-                                          price=price)
+                    container_volume = float(other.container_volume_edit.text())
+                    count = float(other.count.text())
+                    price = float(other.price_edit.text())
+                except Exception as ex:
+                    print(ex)
+                    return
+                try:
+                    c = ContainerInfo(container_name, container_volume)
+                    m = MarkInfo(mark_name, container_volume)
+                    p = FinallyProduct(ProductInfo(product, c), m)
+                    self.stock__soldgoods(product=p, container=c, price=price, count=count)
                     other.close()
                 except Exception as ex:
                     print(ex)
@@ -256,7 +233,7 @@ class Application(QMainWindow):
             recipe = data[product]["recipe"]
         for comp in recipe:
             if not find_component_json(comp):
-                raise Exception("некорректный рецепт, компонент не найден")
+                raise Exception(f"некорректный рецепт, компонент {comp} не найден")
         self.PRODUCT.add(product, mass)  # добавляем массу продукта к готовым продуктам
         set_recipe(product, recipe)
         for comp in recipe:
@@ -273,9 +250,8 @@ class Application(QMainWindow):
             :return:
         """
         mass = count * container.volume
-        if not find_product_json(product):
-            raise Exception("нет продукта")
-
+        if not (find_product_json(product) and find_container_json(container)):
+            raise Exception("нет продукта или тары")
 
         self.PRODUCT.minus(product, mass)
         self.CONTAINER.minus(container, count)
@@ -293,20 +269,14 @@ class Application(QMainWindow):
 
         update(self)
 
-    def stock__soldgoods(self, product, count: float, container_volume: float, cost: float, price: float):
-        try:
-            p = ProductInfo(product, container_volume, cost)
-            self.STOCK.minus(p, count)
-            try:
-                self.SOLDGOODS.add(p, count, price)
-            except Exception as ex:
-                self.STOCK.add(p, count)
-                raise ex
-        except Exception as ex:
-            raise ex
+    def stock__soldgoods(self, product: FinallyProduct, price: float, count: float):
 
-        self.SOLDGOODS.update_table()
-        self.STOCK.update_table()
+        if not (find_finally_product_json(product)):
+            raise Exception("нет продукта")
+        self.DIRTYSTOCK.minus(product.product, count)
+        self.MARK.minus(product.mark, count)
+        self.STOCK.add(product, count)
+        update(self)
 
 
 if __name__ == "__main__":

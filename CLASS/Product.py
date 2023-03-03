@@ -36,20 +36,11 @@ class Product:
 
     def reboot_csv(self):
         self.update_cost_product()
-
-        with open(product_json_path) as f:
-            data = json.load(f)
-
         with open(product_path, 'w') as f:
             w = csv.DictWriter(f, fieldnames=['name', 'mass', 'cost', "sum cost"])
             w.writeheader()
-            for product in data:
-                if product == "product": continue
-                row = {}
-                for line in data[product]:
-                    if line == "recipe": continue
-                    row[line] = data[product][line]
-                w.writerow(row)
+            rows = data_product_to_csv()
+            w.writerows(rows)
         self.update_table()
 
     def update_cost_product(self):

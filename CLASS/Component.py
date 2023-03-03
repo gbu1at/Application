@@ -95,13 +95,8 @@ class Component:
         with open(comp_path, 'w') as f:
             w = csv.DictWriter(f, fieldnames=list(data["component"]))
             w.writeheader()
-            for component in data:
-                if component == "component":
-                    continue
-                row = {}
-                for col in data[component]:
-                    row[col] = data[component][col]
-                w.writerow(row)
+            rows = data_component_to_csv()
+            w.writerows(rows)
         self.update_table()
 
     def minus(self, component, mass):

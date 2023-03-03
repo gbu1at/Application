@@ -75,3 +75,13 @@ def data_component_processing_for_excel():
         for col in data[key]:
             df[col].append(data[key][col])
     return df
+
+
+def data_component_to_csv():
+    data = read_json(comp_json_path)
+    rows = []
+    for component in data:
+        if component == "component":
+            continue
+        rows.append(data[component])
+    return rows

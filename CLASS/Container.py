@@ -84,13 +84,8 @@ class Container:
         with open(container_path, 'w') as f:
             write = csv.DictWriter(f, fieldnames=list(data["container"]["volume"].keys()))
             write.writeheader()
-            for container in data:
-                if container == "container":
-                    continue
-                row = {}
-                for volume in data[container]:
-                    line = data[container][volume]
-                    write.writerow(line)
+            rows = data_container_to_csv()
+            write.writerows(rows)
         self.update_table()
 
     def minus(self, container: ContainerInfo, count):

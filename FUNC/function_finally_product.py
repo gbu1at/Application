@@ -96,3 +96,21 @@ def update_finally_product_sum_cost():
                 obj = data[key][mark_cont][vol]
                 obj["sum cost"] = float(obj["count"]) * float(obj["cost"])
     write_json(finally_product_json_path, data)
+
+
+def data_finally_product_to_csv():
+    data = read_json(finally_product_json_path)
+    rows = []
+    for product in data:
+        if product == "product": continue
+        for key in data[product]:
+            x = data[product][key]
+            for volume in x:
+                line = x[volume]
+                cnt_name = line["container name"]
+                mark = line["mark"]
+                volume = line["volume"]
+                pr = FinallyProduct(ProductInfo(product, ContainerInfo(cnt_name, volume)), MarkInfo(mark, volume))
+                update_finally_product(pr)
+                rows.append(line)
+    return rows

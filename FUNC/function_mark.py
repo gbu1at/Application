@@ -83,3 +83,14 @@ def data_mark_processing_for_excel():
             for col in data[key][vol]:
                 df[col].append(data[key][vol][col])
     return df
+
+
+def data_mark_to_csv():
+    data = read_json(mark_json_path)
+    rows = []
+    for mark in data:
+        if mark == "mark":
+            continue
+        for volume in data[mark]:
+            rows.append(data[mark][volume])
+    return rows

@@ -39,17 +39,10 @@ class DirtyStock():
     def reboot_csv(self):
         data = read_json(dirty_stock_json_path)
         with open(dirtystock_path, "w") as f:
-            write = csv.DictWriter(f, fieldnames=list(data["product"]["container volume"]))
+            write = csv.DictWriter(f, fieldnames=list(data["product"]["container name"]["container volume"]))
             write.writeheader()
-            for product in data:
-                if product == "product": continue
-                for volume in data[product]:
-                    line = data[product][volume]
-                    update_dirty_stock_product(ProductInfo(product, ContainerInfo(line["container name"], volume)))
-                    row = {}
-                    for col in line:
-                        row[col] = line[col]
-                    write.writerow(row)
+            df = data_dirtystock_to_csv()
+            write.writerows(df)
         self.update_table()
 
     def minus(self, product: ProductInfo, count):

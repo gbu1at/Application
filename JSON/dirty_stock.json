@@ -1,1 +1,1 @@
-{"product": {"container volume": {"name": null, "container volume": null, "count": null, "volume": null, "cost": null, "container name": null, "sum cost": null}}, "продукт2": {"0.1": {"name": "продукт 2", "container volume": 0.1, "count": 0.0, "volume": 0.0, "cost": 11.0605, "container name": "флакон белый под тоник", "sum cost": 0.0}}}
+{"product": {"container name": {"container volume": {"name": null, "container volume": null, "count": null, "volume": null, "cost": null, "container name": null, "sum cost": null}}}}
