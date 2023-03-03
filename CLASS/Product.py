@@ -3,9 +3,8 @@ from SETTING import *
 
 
 class Product:
-    def __init__(self, root, win):
+    def __init__(self, root):
         self.root = root
-        self.win = win
         self.initUI()
 
     def setting_btn(self):

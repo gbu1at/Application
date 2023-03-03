@@ -21,8 +21,8 @@ class Application(QMainWindow):
     def __init__(self):
         super().__init__()
         uic.loadUi("main.ui", self)
-        self.COMPONENT = Component(self, self.tab)
-        self.PRODUCT = Product(self, self.tab_2)
+        self.COMPONENT = Component(self)
+        self.PRODUCT = Product(self)
         self.DIRTYSTOCK = DirtyStock(self)
         self.STOCK = FinallyProducts(self)
         self.MARK = Mark(self)
@@ -211,7 +211,7 @@ class Application(QMainWindow):
                     c = ContainerInfo(container_name, container_volume)
                     m = MarkInfo(mark_name, container_volume)
                     p = FinallyProduct(ProductInfo(product, c), m)
-                    self.stock__soldgoods(product=p, container=c, price=price, count=count)
+                    self.stock__soldgoods(product=p, price=price, count=count)
                     other.close()
                 except Exception as ex:
                     print(ex)
@@ -270,12 +270,10 @@ class Application(QMainWindow):
         update(self)
 
     def stock__soldgoods(self, product: FinallyProduct, price: float, count: float):
-
         if not (find_finally_product_json(product)):
             raise Exception("нет продукта")
-        self.DIRTYSTOCK.minus(product.product, count)
-        self.MARK.minus(product.mark, count)
-        self.STOCK.add(product, count)
+        self.STOCK.minus(product, count)
+        self.SOLDGOODS.add(product, count, price)
         update(self)
 
 

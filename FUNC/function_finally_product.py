@@ -98,6 +98,21 @@ def update_finally_product_sum_cost():
     write_json(finally_product_json_path, data)
 
 
+def data_finally_product_processing_for_excel():
+    data = read_json(finally_product_json_path)
+    df = {}
+    for key in data["product"]["container&mark"]["volume"]:
+        df[key] = []
+    for product in data:
+        if product == "product": continue
+        for key in data[product]:
+            for vol in data[product][key]:
+                line = data[product][key][vol]
+                for col in line:
+                    df[col].append(line[col])
+    return df
+
+
 def data_finally_product_to_csv():
     data = read_json(finally_product_json_path)
     rows = []

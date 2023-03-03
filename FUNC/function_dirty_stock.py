@@ -104,6 +104,21 @@ def update_dirtystock_sum_cost():
     write_json(dirty_stock_json_path, data)
 
 
+def data_product_processing_for_excel():
+    data = read_json(product_json_path)
+    df = {}
+    for key in data["product"]["container name"]["container volume"]:
+        df[key] = []
+    for key in data:
+        if key == "product": continue
+        for cnt_name in data[key]:
+            for vol in data[key][cnt_name]:
+                line = data[key][cnt_name][vol]
+                for col in line:
+                    df[col].append(line[col])
+    return df
+
+
 def data_dirtystock_to_csv():
     data = read_json(dirty_stock_json_path)
     df = {}

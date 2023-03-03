@@ -39,6 +39,8 @@ mark_json_path = "JSON/mark.json"
 container_json_path = "JSON/container.json"
 dirty_stock_json_path = "JSON/dirty_stock.json"
 finally_product_json_path = "JSON/finally_product.json"
+sold_goods_json_path = "JSON/sold_goods.json"
+
 
 
 comp_excel_path = "EXCEL/component.xlsx"

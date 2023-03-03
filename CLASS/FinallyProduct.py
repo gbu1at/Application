@@ -33,6 +33,9 @@ class FinallyProducts():
         update_finally_product_sum_cost()
         update_table(stock_path, self.root.StockTable, is_show_line)
 
+    def update_excel(self):
+        write_to_excel(stock_excel_path, data_finally_product_processing_for_excel())
+
     def add(self, product: FinallyProduct, count):
         if not find_finally_product_json(product):
             add_finally_product_json(product)

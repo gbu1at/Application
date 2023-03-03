@@ -78,6 +78,7 @@ def update(root):
     root.PRODUCT.reboot_csv()
     root.DIRTYSTOCK.reboot_csv()
     root.STOCK.reboot_csv()
+    root.SOLDGOODS.reboot_csv()
 
 
 def read_json(file_json):
@@ -106,3 +107,5 @@ def print_excel(root):
     root.CONTAINER.update_excel()
     root.PRODUCT.update_excel()
     root.DIRTYSTOCK.update_excel()
+    root.STOCK.update_excel()
+    root.SOLDGOODS.update_excel()
