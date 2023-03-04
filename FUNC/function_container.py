@@ -17,7 +17,6 @@ def set_cost_container(container: ContainerInfo, new_cost: float):
 def find_container_json(container: ContainerInfo):
     data = read_json(container_json_path)
     key_container = get_key_str(container.name)
-
     if key_container in data:
         return str(container.volume) in data[key_container]
     return False

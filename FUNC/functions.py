@@ -3,12 +3,18 @@ import json
 from SETTING import *
 from PyQt5.QtWidgets import QTableWidgetItem
 from pandas import DataFrame
+import codecs
 
 
 class ContainerInfo:
     def __init__(self, name, volume):
         self.name = name
         self.volume = float(volume)
+
+
+class CapInfo(ContainerInfo):
+    def __init__(self, *args, **kwargs):
+        super().__init__(args, kwargs)
 
 
 class ProductInfo:
@@ -82,7 +88,7 @@ def update(root):
 
 
 def read_json(file_json):
-    with open(file_json, 'r') as f:
+    with open(file_json, 'r', encoding='utf-8-sig') as f:
         data = json.load(f)
     return data
 
